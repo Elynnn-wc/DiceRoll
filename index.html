@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dice Roller</title>
-    <style>
-        /* Container for the prize list */
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dice Roller</title>
+  <style>
+              /* Container for the prize list */
         .prize-list {
             background-color: rgba(0, 0, 0, 0.7);
             color: white;
@@ -405,326 +405,248 @@
             text-align: center;
         }
 
-    </style>
+    /* 省略部分样式保持简洁，这里只贴出修改部分 */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      overflow-y: scroll;
+      padding: 20px;
+    }
+
+    .warning {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #d32f2f;
+      text-align: center;
+    }
+
+    .firework {
+      width: 8px;
+      height: 8px;
+      background-color: #ffcc00;
+      position: absolute;
+      border-radius: 50%;
+      animation: explode 1s ease-out forwards;
+    }
+
+    @keyframes explode {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) scale(0);
+        opacity: 0;
+      }
+    }
+  </style>
 </head>
 <body>
+  <h1>Welcome to Our Prize Giveaway!</h1>
+  <button id="togglePrizeButton">Show Prize List</button>
+  <div id="prizeList" class="prize-list">
+    <h2>FULL PRIZE LIST</h2>
+    <ul>
+      <li>Prize 1: ANGPAO $38</li>
+      <li>Prize 2: DEPOSIT BONUS 30%</li>
+      <li>Prize 3: ANGPAO $68</li>
+      <li>Prize 4: REBORN BONUS 70%</li>
+      <li>Prize 5: ANGPAO $138</li>
+      <li>Prize 6: DEPOSIT BONUS 50%</li>
+    </ul>
+  </div>
 
-    <div class="container">
-        <h1>Welcome to Our Prize Giveaway!</h1>
-        
-        <!-- Prize List Section with a toggle button -->
-        <button id="togglePrizeButton">Show Prize List</button>
-        <div id="prizeList" class="prize-list">
-            <h2>FULL PRIZE LIST</h2> <!-- Default title -->
-            <ul>
-                <li>Prize 1: ANGPAO $38</li>
-                <li>Prize 2: DEPOSIT BONUS 30%</li>
-                <li>Prize 3: ANGPAO $68</li>
-                <li>Prize 4: REBORN BONUS 70%</li>
-                <li>Prize 5: ANGPAO $138</li>
-                <li>Prize 6: DEPOSIT BONUS 50%</li>
-            </ul>
-        </div>
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT8Be2A17SDMoWohdOUSYtb4o6SXsW3XLeWQ&s" alt="Logo" class="logo"/>
+
+  <h1>Dice Roller</h1>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h2>Enter Your Details</h2>
+      <input type="text" id="name" placeholder="Your Name" required />
+      <input type="text" id="phone" placeholder="Your Phone Number" required />
+      <button id="submitBtn">Submit</button>
     </div>
+  </div>
 
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT8Be2A17SDMoWohdOUSYtb4o6SXsW3XLeWQ&s" alt="Logo" class="logo">
+  <div class="dice-container">
+    <div class="dice" id="dice1"></div>
+    <button class="roll-button" id="rollButton" disabled>Roll Dice</button>
+  </div>
 
-    <h1>Dice Roller</h1>
+  <div id="rollWarning" class="warning">Only One Attempt!</div>
 
-    <!-- Modal for Name and Phone Input -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <h2>Enter Your Details</h2>
-            <input type="text" id="name" placeholder="Your Name" required>
-            <input type="text" id="phone" placeholder="Your Phone Number" required>
-            <button id="submitBtn">Submit</button>
-        </div>
-    </div>
+  <div class="history-container">
+    <h2>History Log</h2>
+    <div id="history" class="history">No rolls yet.</div>
+  </div>
 
-    <div class="dice-container">
-        <div class="dice" id="dice1">
-            <!-- Dot pattern for dice faces will be added dynamically -->
-        </div>
-        <button class="roll-button" id="rollButton" disabled>Roll Dice</button>
-    </div>
+  <div id="termsWarning" class="warning">*Terms and Conditions Apply</div>
 
-    <div id="warning" class="warning">Only One Attempt!</div>
+  <div id="popup" class="popup">
+    <h2>Congratulations!</h2>
+    <h3 id="popupResult">Your result is here!</h3>
+    <p id="reminderText">Please Screenshot and Copy the code <br/>Send it to us.</p>
+    <button id="copyText">Copy</button>
+    <button id="closePopup" disabled>OK</button>
+  </div>
 
-    <div class="history-container">
-        <h2>History Log</h2>
-        <div id="history" class="history">No rolls yet.</div>
-    </div>
+  <div id="fireworks" class="fireworks"></div>
 
-    <div id="warning" class="warning">*Term and Conditions Apply</div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js";
 
-    <div id="congratulations" class="congratulations-ribbon"></div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDlKAT8l9kp_X1RXdSV6fOfwGZrt2o6pZA",
+      authDomain: "roll-result.firebaseapp.com",
+      databaseURL: "https://roll-result-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "roll-result",
+      storageBucket: "roll-result.firebasestorage.app",
+      messagingSenderId: "363988214142",
+      appId: "1:363988214142:web:235c0b9dca54f5d9ffd32f",
+      measurementId: "G-DSLWS2RMBW"
+    };
 
-    <div id="fireworks" class="fireworks"></div>
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
 
-    <!-- Stylish Pop-up -->
-    <div id="popup" class="popup">
-        <h2>Congratulations!</h2>
-        <h3 id="popupResult">Your result is here!</h3>
-        <p id="reminderText">Please Screenshot and Copy the code <br> Send it to us.</p>
-        <button id="copyText">Copy</button>
-        <button id="closePopup" disabled>OK</button>
-    </div>
+    let hasRolled = false;
+    let userName = '';
+    let userPhone = '';
+    let historyLog = [];
 
+    window.onload = () => {
+      document.getElementById('modal').style.display = 'flex';
+    };
 
+    document.getElementById('submitBtn').addEventListener('click', () => {
+      userName = document.getElementById('name').value;
+      userPhone = document.getElementById('phone').value;
+      if (userName && userPhone) {
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('rollButton').disabled = false;
+      } else {
+        alert('Please fill in both fields!');
+      }
+    });
 
-    <!-- Firebase -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
-        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js";
+    document.getElementById('togglePrizeButton').addEventListener('click', () => {
+      const prizeList = document.getElementById('prizeList');
+      const button = document.getElementById('togglePrizeButton');
+      if (prizeList.style.maxHeight === '40px' || prizeList.style.maxHeight === '') {
+        prizeList.style.maxHeight = '400px';
+        button.textContent = 'Hide Prize List';
+        prizeList.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      } else {
+        prizeList.style.maxHeight = '40px';
+        button.textContent = 'Show Prize List';
+      }
+    });
 
-        // Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyDlKAT8l9kp_X1RXdSV6fOfwGZrt2o6pZA",
-            authDomain: "roll-result.firebaseapp.com",
-            databaseURL: "https://roll-result-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "roll-result",
-            storageBucket: "roll-result.firebasestorage.app",
-            messagingSenderId: "363988214142",
-            appId: "1:363988214142:web:235c0b9dca54f5d9ffd32f",
-            measurementId: "G-DSLWS2RMBW"
-        };
+    document.getElementById('rollButton').addEventListener('click', rollDice);
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
+    function rollDice() {
+      if (hasRolled) return;
 
-        let hasRolled = false;
-        let userName = '';
-        let userPhone = '';
-        let historyLog = [];
+      let roll1;
+      const rollButton = document.getElementById('rollButton');
 
-        // Show modal on page load
-        window.onload = function () {
-            document.getElementById('modal').style.display = 'flex';
-        };
+      let timer = setInterval(() => {
+        roll1 = weightedRoll();
+        updateDiceDisplay(roll1);
+      }, 100);
 
-        // Form submit
-        document.getElementById('submitBtn').addEventListener('click', submitForm);
+      setTimeout(() => {
+        clearInterval(timer);
+        roll1 = weightedRoll();
+        updateDiceDisplay(roll1);
+        triggerFireworks();
 
-        function submitForm() {
-            userName = document.getElementById('name').value;
-            userPhone = document.getElementById('phone').value;
+        saveToFirebase(userName, userPhone, roll1).then((rollKey) => {
+          historyLog.push(`Roll: ${roll1}`);
+          updateHistory();
 
-            if (userName && userPhone) {
-                document.getElementById('modal').style.display = 'none';
-                document.getElementById('rollButton').disabled = false;
-            } else {
-                alert('Please fill in both fields!');
-            }
-        }
-
-        // Toggle button functionality
-        document.getElementById('togglePrizeButton').addEventListener('click', function () {
-            const prizeList = document.getElementById('prizeList');
-            const toggleButton = document.getElementById('togglePrizeButton');
-
-            if (prizeList.style.maxHeight === '40px' || prizeList.style.maxHeight === '') {
-                prizeList.style.maxHeight = '400px'; // Expand to show full list
-                toggleButton.textContent = 'Hide Prize List'; // Change button text
-            } else {
-                prizeList.style.maxHeight = '40px'; // Collapse to show only the title
-                toggleButton.textContent = 'Show Prize List'; // Change button text back
-            }
+          const popupResult = document.getElementById('popupResult');
+          popupResult.innerHTML = `You rolled a ${roll1}! <br><br> Your Verification Code: <b>${rollKey}</b>`;
+          document.getElementById('popup').style.display = 'block';
+          hasRolled = true;
+          rollButton.disabled = true;
         });
+      }, 5000);
+    }
 
-        // Add event listener to the Roll Dice button
-        document.getElementById('rollButton').addEventListener('click', rollDice);
+    document.getElementById('copyText').addEventListener('click', () => {
+      const resultText = document.getElementById("popupResult").textContent;
+      navigator.clipboard.writeText(resultText).then(() => {
+        alert("Code copied!");
+        document.getElementById("closePopup").disabled = false;
+      }).catch(() => {
+        alert("Failed to copy code.");
+      });
+    });
 
-        function rollDice() {
-            if (hasRolled) {
-                return;
-            }
+    document.getElementById("closePopup").addEventListener("click", () => {
+      document.getElementById("popup").style.display = "none";
+    });
 
-            const rollButton = document.getElementById('rollButton');
-            const congratulationsRibbon = document.getElementById('congratulations');
-            const fireworks = document.getElementById('fireworks');
-            const popup = document.getElementById('popup');
-            const popupResult = document.getElementById('popupResult');
-            const closePopup = document.getElementById('closePopup');
+    function weightedRoll() {
+      const values = [1, 2, 3, 4, 5, 6];
+      const probs = [0.25, 0.2, 0.35, 0.05, 0.05, 0.1];
+      let sum = 0, cumulative = [];
 
-            let roll1;
+      for (let i = 0; i < probs.length; i++) {
+        sum += probs[i];
+        cumulative.push(sum);
+      }
 
-            // Simulate rolling for 5 seconds
-            let rollingTime = 5000;
-            let timer = setInterval(function () {
-                roll1 = weightedRoll();
-                updateDiceDisplay(roll1);
-            }, 100);
+      const rand = Math.random();
+      for (let i = 0; i < cumulative.length; i++) {
+        if (rand < cumulative[i]) return values[i];
+      }
+      return values[values.length - 1];
+    }
 
-            // Stop rolling after 5 seconds
-            setTimeout(function () {
-                clearInterval(timer);
-                roll1 = weightedRoll();
-                updateDiceDisplay(roll1);
+    function updateDiceDisplay(roll) {
+      const dice = document.getElementById('dice1');
+      dice.innerHTML = '';
+      const dot = (cls) => `<div class="dot ${cls}"></div>`;
+      if (roll === 1) dice.innerHTML = dot('dot1');
+      else if (roll === 2) dice.innerHTML = dot('dot2') + dot('dot2-2');
+      else if (roll === 3) dice.innerHTML = dot('dot3-1') + dot('dot3-2') + dot('dot3-3');
+      else if (roll === 4) dice.innerHTML = dot('dot4') + dot('dot4-2') + dot('dot4-3') + dot('dot4-4');
+      else if (roll === 5) dice.innerHTML = dot('dot4') + dot('dot4-2') + dot('dot4-3') + dot('dot4-4') + dot('dot3-2');
+      else if (roll === 6) dice.innerHTML = dot('dot6-1') + dot('dot6-2') + dot('dot6-3') + dot('dot6-4') + dot('dot6-5') + dot('dot6-6');
+    }
 
-                // Show congratulations ribbon
-                congratulationsRibbon.style.display = 'block';
-                setTimeout(function () {
-                    congratulationsRibbon.style.display = 'none';
-                }, 20000);
+    function updateHistory() {
+      document.getElementById('history').innerHTML = historyLog.join('<br>');
+    }
 
-                // Trigger fireworks
-                triggerFireworks();
+    function saveToFirebase(name, phone, roll) {
+      const newRef = push(ref(database, 'rolls'));
+      const time = new Date().toLocaleString();
+      return set(newRef, { name, phone, roll, time }).then(() => newRef.key);
+    }
 
-                // Save data to Firebase and get the key
-                saveToFirebase(userName, userPhone, roll1)
-                    .then((rollKey) => {
-                        // Update history log
-                        historyLog.push(Roll: ${roll1});
-                        updateHistory();
-
-                        // Show the stylish pop-up with results
-                        popupResult.innerHTML = You rolled a ${roll1}! <br> <br> Your Verification Code: <b>${rollKey}</b>; // Show the result and code in the pop-up
-                        popup.style.display = 'block'; // Display the pop-up
-
-                        // Close the pop-up when the "OK" button is clicked
-                        closePopup.addEventListener('click', () => {
-                            popup.style.display = 'none'; // Hide the pop-up
-                        });
-
-                        // Disable the button and set flag
-                        hasRolled = true;
-                        rollButton.disabled = true;
-                    })
-                    .catch((error) => {
-                        console.error('Error saving to Firebase:', error);
-                    });
-            }, rollingTime);
-        }
-
-                // Function to copy only the code (not the reminder text)
-                function copyTextToClipboard() {
-                    const textToCopy = document.getElementById("popupResult").textContent; // Only copy the code
-
-                    // Copy the text to the clipboard
-                    navigator.clipboard.writeText(textToCopy).then(function() {
-                        console.log("Text successfully copied to clipboard!");
-                        alert("Code copied!");
-
-                        // Enable the "OK" button once the code is copied
-                        document.getElementById("closePopup").disabled = false;
-                    }).catch(function(err) {
-                        console.error("Failed to copy text: ", err);
-                        alert("Failed to copy code.");
-                    });
-                }
-
-                // Event listener for the "Copy" button
-                document.getElementById("copyText").addEventListener("click", function() {
-                    copyTextToClipboard();
-                });
-
-                // Event listener for the "OK" button (Close the popup)
-                document.getElementById("closePopup").addEventListener("click", function() {
-                    document.getElementById("popup").style.display = "none"; // Close popup
-                });
-
-
-        function weightedRoll() {
-            const rollValues = [1, 2, 3, 4, 5, 6];
-            const probabilities = [0.25, 0.2, 0.35, 0.05, 0.05, 0.1];
-
-            const cumulativeProbabilities = [];
-            let cumulativeSum = 0;
-
-            for (let i = 0; i < rollValues.length; i++) {
-                cumulativeSum += probabilities[i];
-                cumulativeProbabilities.push(cumulativeSum);
-            }
-
-            const randomNum = Math.random();
-            for (let i = 0; i < cumulativeProbabilities.length; i++) {
-                if (randomNum < cumulativeProbabilities[i]) {
-                    return rollValues[i];
-                }
-            }
-            return rollValues[rollValues.length - 1];
-        }
-
-        function updateDiceDisplay(roll) {
-            const dice1 = document.getElementById('dice1');
-            dice1.innerHTML = '';
-
-            if (roll === 1) {
-                dice1.innerHTML = '<div class="dot dot1"></div>';
-            } else if (roll === 2) {
-                dice1.innerHTML = '<div class="dot dot2"></div><div class="dot dot2-2"></div>';
-            } else if (roll === 3) {
-                dice1.innerHTML = '<div class="dot dot3-1"></div><div class="dot dot3-2"></div><div class="dot dot3-3"></div>';
-            } else if (roll === 4) {
-                dice1.innerHTML = '<div class="dot dot4"></div><div class="dot dot4-2"></div><div class="dot dot4-3"></div><div class="dot dot4-4"></div>';
-            } else if (roll === 5) {
-                dice1.innerHTML = '<div class="dot dot4"></div><div class="dot dot4-2"></div><div class="dot dot4-3"></div><div class="dot dot4-4"></div><div class="dot dot3-2"></div>';
-            } else if (roll === 6) {
-                dice1.innerHTML = '<div class="dot dot6-1"></div><div class="dot dot6-2"></div><div class="dot dot6-3"></div><div class="dot dot6-4"></div><div class="dot dot6-5"></div><div class="dot dot6-6"></div>';
-            }
-        }
-
-        function updateHistory() {
-            const historyElement = document.getElementById('history');
-            historyElement.innerHTML = historyLog.join('<br>');
-        }
-
-        function saveToFirebase(name, phone, roll) {
-            const newRollRef = push(ref(database, 'rolls'));
-            const timestamp = Date.now();
-            const formattedTime = new Date(timestamp).toLocaleString();
-
-            return set(newRollRef, {
-                name: name,
-                phone: phone,
-                roll: roll,
-                time: formattedTime
-            })
-            .then(() => {
-                // Return the key generated for the new entry
-                return newRollRef.key;
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        }
-
-
-        function triggerFireworks() {
-            const fireworksContainer = document.getElementById('fireworks');
-
-            for (let i = 0; i < 10; i++) {
-                const firework = document.createElement('div');
-                firework.classList.add('firework');
-                firework.style.left = Math.random() * 100 + '%';
-                firework.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                fireworksContainer.appendChild(firework);
-            }
-
-            setTimeout(function () {
-                fireworksContainer.innerHTML = '';
-            }, 50000);
-        }
-
-            function showPopup(roll) {
-                const popup = document.getElementById('popup');
-                const popupResult = document.getElementById('popupResult');
-                const closePopup = document.getElementById('closePopup');
-
-                // Set the roll result text
-                popupResult.textContent = You rolled a ${roll}!;
-
-                // Show the pop-up
-                popup.style.display = 'block'; // Make sure the popup is shown
-
-                // Close the pop-up when the "OK" button is clicked
-                closePopup.addEventListener('click', () => {
-                    popup.style.display = 'none'; // Hide the pop-up
-                });
-            }
-
-
-    </script>
+    function triggerFireworks() {
+      const fireworks = document.getElementById('fireworks');
+      for (let i = 0; i < 20; i++) {
+        const fw = document.createElement('div');
+        fw.className = 'firework';
+        fw.style.left = Math.random() * 100 + '%';
+        fw.style.top = Math.random() * 100 + '%';
+        fireworks.appendChild(fw);
+      }
+      setTimeout(() => {
+        fireworks.innerHTML = '';
+      }, 2000);
+    }
+  </script>
 </body>
 </html>
