@@ -539,12 +539,15 @@
     document.getElementById('togglePrizeButton').addEventListener('click', () => {
       const prizeList = document.getElementById('prizeList');
       const button = document.getElementById('togglePrizeButton');
-      if (prizeList.style.maxHeight === '40px' || prizeList.style.maxHeight === '') {
-        prizeList.style.maxHeight = '400px';
+
+      if (prizeList.classList.contains('collapsed')) {
+        prizeList.classList.remove('collapsed');
+        prizeList.classList.add('expanded');
         button.textContent = 'Hide Prize List';
         prizeList.scrollIntoView({ behavior: 'smooth', block: 'end' });
       } else {
-        prizeList.style.maxHeight = '40px';
+        prizeList.classList.remove('expanded');
+        prizeList.classList.add('collapsed');
         button.textContent = 'Show Prize List';
       }
     });
