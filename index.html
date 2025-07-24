@@ -1,9 +1,9 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Dice Roller</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dice Roller</title>
     <style>
       /* 只保留必要样式，删除了 prize-list 和 history 样式 */
       body {
@@ -239,175 +239,182 @@
         }
       }
     </style>
-  </head>
-  <body>
-    <h1>Welcome to Our Prize Giveaway!</h1>
-  
-    <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=476,fit=crop,q=95/mv0J5WEbj8hgVW6P/livebet777_logo-A1a51POD6MszgRX4.png" alt="Logo" class="logo"/>
-  
-    <h1>Dice Roller</h1>
-  
-    <div id="modal" class="modal">
-      <div class="modal-content">
-        <h2>Enter Your Details</h2>
-        <input type="text" id="name" placeholder="Your Name" required />
-        <input type="text" id="phone" placeholder="Your Phone Number" required />
-        <button id="submitBtn">Submit</button>
-      </div>
+</head>
+<body>
+  <h1>Welcome to Our Prize Giveaway!</h1>
+
+  <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=476,fit=crop,q=95/mv0J5WEbj8hgVW6P/livebet777_logo-A1a51POD6MszgRX4.png" alt="Logo" class="logo"/>
+
+  <h1>Dice Roller</h1>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h2>Enter Your Details</h2>
+      <input type="text" id="name" placeholder="Your Name" required />
+      <input type="text" id="phone" placeholder="Your Phone Number" required />
+      <button id="submitBtn">Submit</button>
     </div>
-  
-    <div class="dice-container">
-      <div class="dice" id="dice1"></div>
-      <button class="roll-button" id="rollButton" disabled>Roll Dice</button>
-    </div>
-  
-    <div id="rollWarning" class="warning">Only One Attempt!</div>
-  
-    <!-- 🎁 替代 History 的图片展示区 -->
-    <div class="image-prize-section">
-      <img id="prizeImage" src="https://i.imgur.com/Apd19xC.jpeg" alt="Prize List" style="width: 90%; max-width: 500px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin-top: 30px;" />
-    </div>
-  
-    <div id="termsWarning" class="warning">*Terms and Conditions Apply</div>
-  
-    <div id="popup" class="popup">
-      <h2>Congratulations!</h2>
-      <h3 id="popupResult">Your result is here!</h3>
-      <p id="reminderText">Please Screenshot and Copy the code <br/>Send it to us.</p>
-      <button id="copyText">Copy</button>
-      <button id="closePopup" disabled>OK</button>
-    </div>
-  
-    <div id="fireworks" class="fireworks"></div>
-  
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
-      import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js";
-  
-      const firebaseConfig = {
-        apiKey: "AIzaSyDlKAT8l9kp_X1RXdSV6fOfwGZrt2o6pZA",
-        authDomain: "roll-result.firebaseapp.com",
-        databaseURL: "https://roll-result-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "roll-result",
-        storageBucket: "roll-result.appspot.com",
-        messagingSenderId: "363988214142",
-        appId: "1:363988214142:web:235c0b9dca54f5d9ffd32f",
-        measurementId: "G-DSLWS2RMBW"
-      };
-  
-      const app = initializeApp(firebaseConfig);
-      const database = getDatabase(app);
-  
-      let hasRolled = false;
-      let userName = '';
-      let userPhone = '';
-  
-      window.onload = () => {
-        document.getElementById('modal').style.display = 'flex';
-      };
-  
-      document.getElementById('submitBtn').addEventListener('click', () => {
-        userName = document.getElementById('name').value;
-        userPhone = document.getElementById('phone').value;
-        if (userName && userPhone) {
-          document.getElementById('modal').style.display = 'none';
-          document.getElementById('rollButton').disabled = false;
-        } else {
-          alert('Please fill in both fields!');
-        }
-      });
-  
-      document.getElementById('rollButton').addEventListener('click', rollDice);
-  
-      function rollDice() {
-        if (hasRolled) return;
-  
-        let roll1;
-        const rollButton = document.getElementById('rollButton');
-  
-        let timer = setInterval(() => {
-          roll1 = weightedRoll();
-          updateDiceDisplay(roll1);
-        }, 100);
-  
-        setTimeout(() => {
-          clearInterval(timer);
-          roll1 = weightedRoll();
-          updateDiceDisplay(roll1);
-          triggerFireworks();
-  
-          saveToFirebase(userName, userPhone, roll1).then((rollKey) => {
-            const popupResult = document.getElementById('popupResult');
-            popupResult.innerHTML = `You rolled a ${roll1}! <br><br> Your Verification Code: <b>${rollKey}</b>`;
-            document.getElementById('popup').style.display = 'block';
-            hasRolled = true;
-            rollButton.disabled = true;
-          });
-        }, 5000);
+  </div>
+
+  <div class="dice-container">
+    <div class="dice" id="dice1"></div>
+    <button class="roll-button" id="rollButton" disabled>Roll Dice</button>
+  </div>
+
+  <div id="rollWarning" class="warning">Only One Attempt!</div>
+
+  <div class="image-prize-section">
+    <img id="prizeImage" src="https://i.imgur.com/Apd19xC.jpeg" alt="Prize List" style="width: 90%; max-width: 500px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin-top: 30px;" />
+  </div>
+
+  <div id="termsWarning" class="warning">*Terms and Conditions Apply</div>
+
+  <div id="popup" class="popup">
+    <h2>Congratulations!</h2>
+    <h3 id="popupResult">Your result is here!</h3>
+    <p id="reminderText">Please Screenshot and Copy the code <br/>Send it to us.</p>
+    <button id="copyText">Copy</button>
+    <button id="closePopup" disabled>OK</button>
+  </div>
+
+  <div id="fireworks" class="fireworks"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDlKAT8l9kp_X1RXdSV6fOfwGZrt2o6pZA",
+      authDomain: "roll-result.firebaseapp.com",
+      databaseURL: "https://roll-result-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "roll-result",
+      storageBucket: "roll-result.appspot.com",
+      messagingSenderId: "363988214142",
+      appId: "1:363988214142:web:235c0b9dca54f5d9ffd32f",
+      measurementId: "G-DSLWS2RMBW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    let hasRolled = false;
+    let userName = '';
+    let userPhone = '';
+
+    window.onload = () => {
+      // ✅ localStorage 检查
+      if (localStorage.getItem('hasRolled')) {
+        document.body.innerHTML = "<h2 style='text-align:center; margin-top:100px;'>You have already participated. Only one attempt is allowed.</h2>";
+        return;
       }
-  
-      document.getElementById('copyText').addEventListener('click', () => {
-        const resultText = document.getElementById("popupResult").textContent;
-        navigator.clipboard.writeText(resultText).then(() => {
-          alert("Code copied!");
-          document.getElementById("closePopup").disabled = false;
-        }).catch(() => {
-          alert("Failed to copy code.");
+      document.getElementById('modal').style.display = 'flex';
+    };
+
+    document.getElementById('submitBtn').addEventListener('click', () => {
+      userName = document.getElementById('name').value;
+      userPhone = document.getElementById('phone').value;
+      if (userName && userPhone) {
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('rollButton').disabled = false;
+      } else {
+        alert('Please fill in both fields!');
+      }
+    });
+
+    document.getElementById('rollButton').addEventListener('click', rollDice);
+
+    function rollDice() {
+      if (hasRolled) return;
+
+      let roll1;
+      const rollButton = document.getElementById('rollButton');
+
+      let timer = setInterval(() => {
+        roll1 = weightedRoll();
+        updateDiceDisplay(roll1);
+      }, 100);
+
+      setTimeout(() => {
+        clearInterval(timer);
+        roll1 = weightedRoll();
+        updateDiceDisplay(roll1);
+        triggerFireworks();
+
+        saveToFirebase(userName, userPhone, roll1).then((rollKey) => {
+          const popupResult = document.getElementById('popupResult');
+          popupResult.innerHTML = `You rolled a ${roll1}! <br><br> Your Verification Code: <b>${rollKey}</b>`;
+          document.getElementById('popup').style.display = 'block';
+          hasRolled = true;
+          rollButton.disabled = true;
+
+          // ✅ 记录本地状态，防止刷新重复
+          localStorage.setItem('hasRolled', 'true');
         });
+      }, 5000);
+    }
+
+    document.getElementById('copyText').addEventListener('click', () => {
+      const resultText = document.getElementById("popupResult").textContent;
+      navigator.clipboard.writeText(resultText).then(() => {
+        alert("Code copied!");
+        document.getElementById("closePopup").disabled = false;
+      }).catch(() => {
+        alert("Failed to copy code.");
       });
-  
-      document.getElementById("closePopup").addEventListener("click", () => {
-        document.getElementById("popup").style.display = "none";
-      });
-  
-      function weightedRoll() {
-        const values = [1, 2, 3, 4, 5, 6];
-        const probs = [0.2, 0.2, 0.4, 0.1, 0.05, 0.05];
-        let sum = 0, cumulative = [];
-  
-        for (let i = 0; i < probs.length; i++) {
-          sum += probs[i];
-          cumulative.push(sum);
-        }
-  
-        const rand = Math.random();
-        for (let i = 0; i < cumulative.length; i++) {
-          if (rand < cumulative[i]) return values[i];
-        }
-        return values[values.length - 1];
+    });
+
+    document.getElementById("closePopup").addEventListener("click", () => {
+      document.getElementById("popup").style.display = "none";
+    });
+
+    function weightedRoll() {
+      const values = [1, 2, 3, 4, 5, 6];
+      const probs = [0.2, 0.2, 0.4, 0.1, 0.05, 0.05];
+      let sum = 0, cumulative = [];
+
+      for (let i = 0; i < probs.length; i++) {
+        sum += probs[i];
+        cumulative.push(sum);
       }
-  
-      function updateDiceDisplay(roll) {
-        const dice = document.getElementById('dice1');
-        dice.innerHTML = '';
-        const dot = (cls) => `<div class="dot ${cls}"></div>`;
-        if (roll === 1) dice.innerHTML = dot('dot1');
-        else if (roll === 2) dice.innerHTML = dot('dot2') + dot('dot2-2');
-        else if (roll === 3) dice.innerHTML = dot('dot3-1') + dot('dot3-2') + dot('dot3-3');
-        else if (roll === 4) dice.innerHTML = dot('dot4') + dot('dot4-2') + dot('dot4-3') + dot('dot4-4');
-        else if (roll === 5) dice.innerHTML = dot('dot4') + dot('dot4-2') + dot('dot4-3') + dot('dot4-4') + dot('dot3-2');
-        else if (roll === 6) dice.innerHTML = dot('dot6-1') + dot('dot6-2') + dot('dot6-3') + dot('dot6-4') + dot('dot6-5') + dot('dot6-6');
+
+      const rand = Math.random();
+      for (let i = 0; i < cumulative.length; i++) {
+        if (rand < cumulative[i]) return values[i];
       }
-  
-      function saveToFirebase(name, phone, roll) {
-        const newRef = push(ref(database, 'rolls'));
-        const time = new Date().toLocaleString();
-        return set(newRef, { name, phone, roll, time }).then(() => newRef.key);
+      return values[values.length - 1];
+    }
+
+    function updateDiceDisplay(roll) {
+      const dice = document.getElementById('dice1');
+      dice.innerHTML = '';
+      const dot = (cls) => `<div class="dot ${cls}"></div>`;
+      if (roll === 1) dice.innerHTML = dot('dot1');
+      else if (roll === 2) dice.innerHTML = dot('dot2') + dot('dot2-2');
+      else if (roll === 3) dice.innerHTML = dot('dot3-1') + dot('dot3-2') + dot('dot3-3');
+      else if (roll === 4) dice.innerHTML = dot('dot4') + dot('dot4-2') + dot('dot4-3') + dot('dot4-4');
+      else if (roll === 5) dice.innerHTML = dot('dot4') + dot('dot4-2') + dot('dot4-3') + dot('dot4-4') + dot('dot3-2');
+      else if (roll === 6) dice.innerHTML = dot('dot6-1') + dot('dot6-2') + dot('dot6-3') + dot('dot6-4') + dot('dot6-5') + dot('dot6-6');
+    }
+
+    function saveToFirebase(name, phone, roll) {
+      const newRef = push(ref(database, 'rolls'));
+      const time = new Date().toLocaleString();
+      return set(newRef, { name, phone, roll, time }).then(() => newRef.key);
+    }
+
+    function triggerFireworks() {
+      const fireworks = document.getElementById('fireworks');
+      for (let i = 0; i < 20; i++) {
+        const fw = document.createElement('div');
+        fw.className = 'firework';
+        fw.style.left = Math.random() * 100 + '%';
+        fw.style.top = Math.random() * 100 + '%';
+        fireworks.appendChild(fw);
       }
-  
-      function triggerFireworks() {
-        const fireworks = document.getElementById('fireworks');
-        for (let i = 0; i < 20; i++) {
-          const fw = document.createElement('div');
-          fw.className = 'firework';
-          fw.style.left = Math.random() * 100 + '%';
-          fw.style.top = Math.random() * 100 + '%';
-          fireworks.appendChild(fw);
-        }
-        setTimeout(() => {
-          fireworks.innerHTML = '';
-        }, 2000);
-      }
-    </script>
-  </body>
-  </html>
+      setTimeout(() => {
+        fireworks.innerHTML = '';
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
