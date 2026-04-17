@@ -20,7 +20,13 @@
 
   <main class="main-content">
     
-    <div class="scene">
+    <div id="alreadyRolledMsg" style="display:none; flex-direction:column; align-items:center; justify-content:center; height: 50vh;">
+      <h2 style="color: #ffcf00;">You have already participated.</h2>
+      <p>Only one attempt is allowed per user.</p>
+    </div>
+
+    <div id="playableArea" style="display:flex; flex-direction:column; align-items:center; width:100%;">
+      <div class="scene">
       <div class="cube" id="diceCube">
         <!-- Face 1 -->
         <div class="face face-1">
@@ -73,8 +79,8 @@
     <div class="prize-showcase">
       <img id="prizeImage" src="https://i.imgur.com/Apd19xC.jpeg" alt="Prize List" class="prize-img" />
     </div>
-    <div class="terms-text">*Terms & Conditions Apply</div>
-
+      <div class="terms-text">*Terms & Conditions Apply</div>
+    </div>
   </main>
 
   <!-- Modals -->
