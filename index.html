@@ -1,1 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VIP 3D Dice Roller</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="background-effects">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+  </div>
 
+  <header class="header">
+    <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=476,fit=crop,q=95/mv0J5WEbj8hgVW6P/livebet777_logo-A1a51POD6MszgRX4.png" alt="Logo" class="logo"/>
+    <h1 class="title">Exclusive Prize Giveaway</h1>
+  </header>
+
+  <main class="main-content">
+    
+    <div class="scene">
+      <div class="cube" id="diceCube">
+        <!-- Face 1 -->
+        <div class="face face-1">
+          <div class="dot dot-center"></div>
+        </div>
+        <!-- Face 2 -->
+        <div class="face face-2">
+          <div class="dot dot-top-right"></div>
+          <div class="dot dot-bottom-left"></div>
+        </div>
+        <!-- Face 3 -->
+        <div class="face face-3">
+          <div class="dot dot-top-right"></div>
+          <div class="dot dot-center"></div>
+          <div class="dot dot-bottom-left"></div>
+        </div>
+        <!-- Face 4 -->
+        <div class="face face-4">
+          <div class="dot dot-top-left"></div>
+          <div class="dot dot-top-right"></div>
+          <div class="dot dot-bottom-left"></div>
+          <div class="dot dot-bottom-right"></div>
+        </div>
+        <!-- Face 5 -->
+        <div class="face face-5">
+          <div class="dot dot-top-left"></div>
+          <div class="dot dot-top-right"></div>
+          <div class="dot dot-center"></div>
+          <div class="dot dot-bottom-left"></div>
+          <div class="dot dot-bottom-right"></div>
+        </div>
+        <!-- Face 6 -->
+        <div class="face face-6">
+          <div class="dot dot-top-left"></div>
+          <div class="dot dot-top-right"></div>
+          <div class="dot dot-mid-left"></div>
+          <div class="dot dot-mid-right"></div>
+          <div class="dot dot-bottom-left"></div>
+          <div class="dot dot-bottom-right"></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="roll-btn" id="rollButton" disabled>
+      <span>ROLL DICE</span>
+    </button>
+    
+    <div id="rollWarning" class="warning-text">1 Attempt Per User</div>
+
+    <div class="prize-showcase">
+      <img id="prizeImage" src="https://i.imgur.com/Apd19xC.jpeg" alt="Prize List" class="prize-img" />
+    </div>
+    <div class="terms-text">*Terms & Conditions Apply</div>
+
+  </main>
+
+  <!-- Modals -->
+  <div id="modal" class="modal-overlay">
+    <div class="modal-card">
+      <h2>Enter Your Details</h2>
+      <p>Please enter your information to participate in the giveaway.</p>
+      <input type="text" id="name" placeholder="Your Name" required />
+      <input type="text" id="phone" placeholder="Your Phone Number" required />
+      <button id="submitBtn" class="primary-btn">Submit</button>
+    </div>
+  </div>
+
+  <div id="popup" class="modal-overlay popup-overlay" style="display: none;">
+    <div class="modal-card popup-card">
+      <h2 class="gold-text">Congratulations!</h2>
+      <div class="result-box">
+        <h3 id="popupResult">Your result is here!</h3>
+      </div>
+      <p id="reminderText">Please Screenshot and Copy the code<br/>then send it to us.</p>
+      <div class="popup-actions">
+         <button id="copyText" class="secondary-btn">Copy Code</button>
+         <button id="closePopup" class="primary-btn" disabled>OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="fireworks" class="fireworks"></div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
