@@ -33,11 +33,9 @@ const rollButton = document.getElementById('rollButton');
 window.onload = () => {
   // Check local storage to prevent duplicate rolls
   if (localStorage.getItem('hasRolled')) {
-    document.body.innerHTML = `
-      <div style="display:flex; height:100vh; align-items:center; justify-content:center; flex-direction:column; background:#0b0c10; color:#fff; text-align:center;">
-        <h2 style="color: #fcc200;">You have already participated.</h2>
-        <p>Only one attempt is allowed per user.</p>
-      </div>`;
+    document.getElementById('playableArea').style.display = 'none';
+    document.getElementById('alreadyRolledMsg').style.display = 'flex';
+    document.getElementById('modal').style.display = 'none';
     return;
   }
   document.getElementById('modal').style.display = 'flex';
