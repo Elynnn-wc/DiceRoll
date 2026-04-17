@@ -25,6 +25,7 @@ const database = getDatabase(app);
 let hasRolled = false;
 let userName = '';
 let userPhone = '';
+let devForcedResult = 0;
 
 const diceCube = document.getElementById('diceCube');
 const rollButton = document.getElementById('rollButton');
@@ -69,6 +70,10 @@ rollButton.addEventListener('click', () => {
 
 // Calculate Weighted Roll
 function weightedRoll() {
+  if (devForcedResult >= 1 && devForcedResult <= 6) {
+    return devForcedResult;
+  }
+
   const { values, weights } = PROBABILITIES;
   let sum = 0, cumulative = [];
 
@@ -190,4 +195,38 @@ document.addEventListener('keydown', (e) => {
     alert("✅ Developer Reloading: LocalStorage Cleared");
     location.reload();
   }
+});
+
+// Secret Developer Button (5 rapid clicks on logo)
+let secretClicks = 0;
+let secretTimer = null;
+document.getElementById('secretButton').addEventListener('click', () => {
+  secretClicks++;
+  if (secretClicks === 1) {
+    secretTimer = setTimeout(() => { secretClicks = 0; }, 2000);
+  }
+  if (secretClicks >= 5) {
+    secretClicks = 0;
+    clearTimeout(secretTimer);
+    const pwd = prompt("Enter Developer Password:");
+    if (pwd === "231879") {
+      document.getElementById("devModal").style.display = "flex";
+    } else {
+      alert("Incorrect password.");
+    }
+  }
+});
+
+document.getElementById('devCloseBtn').addEventListener('click', () => {
+  document.getElementById("devModal").style.display = "none";
+});
+
+document.getElementById('devResetBtn').addEventListener('click', () => {
+  localStorage.removeItem('hasRolled');
+  alert("Roll history cleared. Reloading...");
+  location.reload();
+});
+
+document.getElementById('devForceResult').addEventListener('input', (e) => {
+  devForcedResult = parseInt(e.target.value) || 0;
 });
